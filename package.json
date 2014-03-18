@@ -1,7 +1,7 @@
 {
   "name": "grunt-angular-i18n-finder",
   "description": "Find key name for Angular i18n",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/alicoding/grunt-angular-i18n-finder",
   "author": {
     "name": "Ali Al Dallal",
