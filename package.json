@@ -24,8 +24,8 @@
   "engines": {
     "node": ">= 0.8.0"
   },
-  "scripts": {
-    "test": "grunt test"
+  "dependencies": {
+    "lodash": "2.4.1"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.0",
@@ -37,6 +37,12 @@
     "grunt": "~0.4.2"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin",
+    "i18n",
+    "l10n",
+    "webmaker",
+    "localization",
+    "key name",
+    "finder"
   ]
 }
