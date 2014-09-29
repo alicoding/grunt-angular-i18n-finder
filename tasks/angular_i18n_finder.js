@@ -22,15 +22,25 @@ module.exports = function(grunt) {
           }, options.pathToJSON);
     var keys = [];
 
+    var deepKeys = [];
+    var serializeDeepKeys = function(root, locales) {
+      _.forIn(locales, function(val, key) {
+        var parent = (root === null) ? key : root + '.' + key;
+        if (typeof(locales) === 'object') { serializeDeepKeys(parent, val); }
+        if (typeof(val) === 'string') { deepKeys.push(parent); }
+      });
+    };
+
     files.forEach(function(f, i) {
       localeJSON = _.merge(localeJSON, grunt.file.readJSON(f));
+      serializeDeepKeys(null, localeJSON);
     });
-    localeJSON = _.keys(localeJSON);
+    localeJSON = deepKeys;
 
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var re = content.replace(/["']([^"']+?)['"]\s*\|\s*i18n/g, function(wholeMatch, key) {
+        var re = content.replace(/["']([^"']+?)['"]\s*\|\s*translate/g, function(wholeMatch, key) {
           keys.push(key);
           return wholeMatch;
         });
