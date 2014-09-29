@@ -26,8 +26,10 @@ module.exports = function(grunt) {
     var serializeDeepKeys = function(root, locales) {
       _.forIn(locales, function(val, key) {
         var parent = (root === null) ? key : root + '.' + key;
-        if (typeof(locales) === 'object') { serializeDeepKeys(parent, val); }
-        if (typeof(val) === 'string') { deepKeys.push(parent); }
+        var ignoreGroup = _.contains(options.ignoreKeys, parent + '.*');
+        var ignoreSingle = _.contains(options.ignoreKeys, parent);
+        if (typeof(locales) === 'object' && ignoreGroup === false) { serializeDeepKeys(parent, val); }
+        if (typeof(val) === 'string' && ignoreSingle === false) { deepKeys.push(parent); }
       });
     };
 
@@ -48,13 +50,12 @@ module.exports = function(grunt) {
     });
 
     var compare = _.difference(localeJSON, keys);
-    var diff = _.difference(compare, options.ignoreKeys);
 
-    if (!diff.length) {
+    if (!compare.length) {
       grunt.log.ok("No unused key names found in JSON provided.\n");
     } else {
       grunt.log.warn("Found unused key names in JSON provided.\n",
-        "Please consider removing them or add to the ignoreKeys.\n list:", diff);
+        "Please consider removing them or add to the ignoreKeys.\n list:", compare);
     }
   });
 
