@@ -36,6 +36,30 @@ grunt.initConfig({
 });
 ```
 
+### JSON format
+
+We currently support both _flat_ and _structured_ JSON files.
+
+```javascript
+// example of flat file
+{
+  ACTION_DELETE: "Delete this file",
+  ACTION_EDIT: "Edit your input",
+  ...
+}
+```
+
+```javascript
+// example of structured file
+{
+  ACTION: {
+    DELETE: "Delete this file",
+    EDIT: "Edit your input",
+    ...
+  }
+}
+```
+
 ### Options
 
 #### options.pathToJSON
