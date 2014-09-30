@@ -36,6 +36,30 @@ grunt.initConfig({
 });
 ```
 
+### JSON format
+
+We currently support both _flat_ and _structured_ JSON files.
+
+```javascript
+// example of flat file
+{
+  ACTION_DELETE: "Delete this file",
+  ACTION_EDIT: "Edit your input",
+  ...
+}
+```
+
+```javascript
+// example of structured file
+{
+  ACTION: {
+    DELETE: "Delete this file",
+    EDIT: "Edit your input",
+    ...
+  }
+}
+```
+
 ### Options
 
 #### options.pathToJSON
@@ -47,6 +71,12 @@ An array of path to JSON blob file(s).
 Type: `Array`
 
 An array of strings value that is used to ignore any keys that you don't want it to complain about.
+
+### options.filter
+Type: `String` (default: _i18n_)
+
+A filter name used to perform translation. If you are using an other filter than `i18n` to print
+translated strings (ex: `{{ '_key_name' | translate }}` ), set `filter: "translate"`.
 
 #Support:
 

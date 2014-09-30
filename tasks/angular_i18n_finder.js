@@ -13,7 +13,7 @@ module.exports = function(grunt) {
   var path = require('path');
 
   grunt.registerMultiTask('angular_i18n_finder', 'Find key name for Angular i18n', function() {
-    var options = this.options();
+    var options = this.options({filter: 'i18n'});
     var localeJSON = {};
     var files = grunt.file.expand({
             filter: function (filePath) {
@@ -22,15 +22,28 @@ module.exports = function(grunt) {
           }, options.pathToJSON);
     var keys = [];
 
+    var deepKeys = [];
+    var serializeDeepKeys = function(root, locales) {
+      _.forIn(locales, function(val, key) {
+        var parent = (root === null) ? key : root + '.' + key;
+        var ignoreGroup = _.contains(options.ignoreKeys, parent + '.*');
+        var ignoreSingle = _.contains(options.ignoreKeys, parent);
+        if (typeof(locales) === 'object' && ignoreGroup === false) { serializeDeepKeys(parent, val); }
+        if (typeof(val) === 'string' && ignoreSingle === false) { deepKeys.push(parent); }
+      });
+    };
+
     files.forEach(function(f, i) {
       localeJSON = _.merge(localeJSON, grunt.file.readJSON(f));
+      serializeDeepKeys(null, localeJSON);
     });
-    localeJSON = _.keys(localeJSON);
+    localeJSON = deepKeys;
 
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var re = content.replace(/["']([^"']+?)['"]\s*\|\s*i18n/g, function(wholeMatch, key) {
+        var matcher = '["\']([^"\']+?)[\'"]\\s*|\\s*' + options.filter;
+        var re = content.replace(new RegExp(matcher, 'g'), function(wholeMatch, key) {
           keys.push(key);
           return wholeMatch;
         });
@@ -38,13 +51,12 @@ module.exports = function(grunt) {
     });
 
     var compare = _.difference(localeJSON, keys);
-    var diff = _.difference(compare, options.ignoreKeys);
 
-    if (!diff.length) {
+    if (!compare.length) {
       grunt.log.ok("No unused key names found in JSON provided.\n");
     } else {
       grunt.log.warn("Found unused key names in JSON provided.\n",
-        "Please consider removing them or add to the ignoreKeys.\n list:", diff);
+        "Please consider removing them or add to the ignoreKeys.\n list:", compare);
     }
   });
 
