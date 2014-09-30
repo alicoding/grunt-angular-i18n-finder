@@ -13,7 +13,7 @@ module.exports = function(grunt) {
   var path = require('path');
 
   grunt.registerMultiTask('angular_i18n_finder', 'Find key name for Angular i18n', function() {
-    var options = this.options();
+    var options = this.options({filter: 'i18n'});
     var localeJSON = {};
     var files = grunt.file.expand({
             filter: function (filePath) {
@@ -42,7 +42,8 @@ module.exports = function(grunt) {
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var re = content.replace(/["']([^"']+?)['"]\s*\|\s*translate/g, function(wholeMatch, key) {
+        var matcher = '["\']([^"\']+?)[\'"]\\s*|\\s*' + options.filter;
+        var re = content.replace(new RegExp(matcher, 'g'), function(wholeMatch, key) {
           keys.push(key);
           return wholeMatch;
         });

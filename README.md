@@ -48,6 +48,12 @@ Type: `Array`
 
 An array of strings value that is used to ignore any keys that you don't want it to complain about.
 
+### options.filter
+Type: `String` (default: _i18n_)
+
+A filter name used to perform translation. If you are using an other filter than `i18n` to print
+translated strings (ex: `{{ '_key_name' | translate }}` ), set `filter: "translate"`.
+
 #Support:
 
 Currently we support both `.html` and `.ejs`.
