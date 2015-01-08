@@ -32,7 +32,9 @@ module.exports = function(grunt) {
           if (typeof(locales) === 'object' && ignoreGroup === false) { serializeDeepKeys(parent, val); }
           if (typeof(val) === 'string' && ignoreSingle === false) { deepKeys.push(parent); }
         }
-        deepKeys.push(key);
+        if(!_.contains(options.ignoreKeys, key)) {
+          deepKeys.push(key);
+        }
       });
     };
 
