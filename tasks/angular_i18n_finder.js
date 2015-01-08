@@ -25,11 +25,14 @@ module.exports = function(grunt) {
     var deepKeys = [];
     var serializeDeepKeys = function(root, locales) {
       _.forIn(locales, function(val, key) {
-        var parent = (root === null) ? key : root + '.' + key;
-        var ignoreGroup = _.contains(options.ignoreKeys, parent + '.*');
-        var ignoreSingle = _.contains(options.ignoreKeys, parent);
-        if (typeof(locales) === 'object' && ignoreGroup === false) { serializeDeepKeys(parent, val); }
-        if (typeof(val) === 'string' && ignoreSingle === false) { deepKeys.push(parent); }
+        if(options.format !== "chromeI18n") {
+          var parent = (root === null) ? key : root + '.' + key;
+          var ignoreGroup = _.contains(options.ignoreKeys, parent + '.*');
+          var ignoreSingle = _.contains(options.ignoreKeys, parent);
+          if (typeof(locales) === 'object' && ignoreGroup === false) { serializeDeepKeys(parent, val); }
+          if (typeof(val) === 'string' && ignoreSingle === false) { deepKeys.push(parent); }
+        }
+        deepKeys.push(key);
       });
     };
 
@@ -42,10 +45,19 @@ module.exports = function(grunt) {
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var matcher = '["\']([^"\']+?)[\'"]\\s*|\\s*' + options.filter;
-        var re = content.replace(new RegExp(matcher, 'g'), function(wholeMatch, key) {
-          keys.push(key);
-          return wholeMatch;
+        var matcher = new RegExp("\\{\\{\\s*\\'([^|}]+)\\'\\s*?\\|\\s*" + options.filter + " \\}\\}", 'g');
+        var matcher2 = '"\\\'\\s*([^|}]+)\\\'\\s*?\\|\\s*' + options.filter + '\\s*"';
+
+        content.replace(matcher, function(wholeMatch, key) {
+          if(key !== undefined) {
+            keys.push(key);
+          }
+        });
+
+        content.replace(new RegExp(matcher2, 'g'), function(wholeMatch, key) {
+          if(key !== undefined) {
+            keys.push(key);
+          }
         });
       }
     });
