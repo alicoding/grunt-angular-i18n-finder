@@ -47,7 +47,7 @@ module.exports = function(grunt) {
     this.filesSrc.forEach(function (f) {
       if (grunt.file.exists(f)) {
         var content = grunt.file.read(f);
-        var matcher = new RegExp("\\{\\{\\s*\\'([^|}]+)\\'\\s*?\\|\\s*" + options.filter + " \\}\\}", 'g');
+        var matcher = new RegExp("\\{\\{\\s*\\'([^|}]+)\\'\\s*\\|\\s*" + options.filter + "\\s*\\}\\}", 'g');
         var matcher2 = '"\\\'\\s*([^|}]+)\\\'\\s*?\\|\\s*' + options.filter + '\\s*"';
 
         content.replace(matcher, function(wholeMatch, key) {
